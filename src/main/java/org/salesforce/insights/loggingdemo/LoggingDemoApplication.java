@@ -35,9 +35,9 @@ public class LoggingDemoApplication {
         return "Service 1";
     }
 
-    @RequestMapping("/salesforce")
+    @RequestMapping("/redirect")
     String callBackToService1() {
-        log.info("Called back to Salesforce");
+        log.info("Called back to service 1");
         return restTemplate.getForObject("https://logging-demo.herokuapp.com/service1", String.class);
     }
 
