@@ -1,6 +1,8 @@
 package org.salesforce.insights.loggingdemo;
 
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import org.apache.logging.log4j.Logger;
 
 
 @RestController
 @SpringBootApplication
 public class LoggingDemoApplication {
-    private static Logger log = LogManager.getLogger(LoggingDemoApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggingDemoApplication.class);
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -43,7 +45,8 @@ public class LoggingDemoApplication {
 
     @RequestMapping("/service-error")
     void serviceError() {
-        Exception e = new Exception("Service exception");
+        String traceId = MDC.get("X-B3-TraceId");
+        Exception e = new Exception("Service exception at trace ID: " + traceId);
         log.error("Service error", e);
     }
 
