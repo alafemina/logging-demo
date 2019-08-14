@@ -41,6 +41,12 @@ public class LoggingDemoApplication {
         return restTemplate.getForObject("https://logging-demo.herokuapp.com/service1", String.class);
     }
 
+    @RequestMapping("/service-error")
+    void serviceError() {
+        Exception e = new Exception("Service exception");
+        log.error("Service error", e);
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(LoggingDemoApplication.class, args);
     }
