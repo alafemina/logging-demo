@@ -1,5 +1,6 @@
 package org.salesforce.insights.loggingdemo;
 
+import io.sentry.Sentry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -38,7 +40,7 @@ public class LoggingDemoApplication {
     }
 
     @RequestMapping("/redirect")
-    String callBackToService1() {
+    String callBackToService1(HttpServletResponse httpResponse) {
         log.info("Called back to service 1");
         return restTemplate.getForObject("https://logging-demo.herokuapp.com/service1", String.class);
     }
@@ -48,6 +50,7 @@ public class LoggingDemoApplication {
         String traceId = MDC.get("X-B3-TraceId");
         Exception e = new Exception("Service exception at trace ID: " + traceId);
         log.error("Service error", e);
+        Sentry.capture(e);
     }
 
     public static void main(String[] args) {
